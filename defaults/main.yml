@@ -1,0 +1,9 @@
+# Global Default variables
+# Adapt to your default settings
+
+sap_hana_control_sid:
+sap_hana_control_instance_nr:
+sap_hana_control_function:
+sap_hana_control_user:
+sap_hana_control_current_password:
+sap_hana_new_password:

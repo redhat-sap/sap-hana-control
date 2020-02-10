@@ -1,0 +1,34 @@
+---
+
+- name: Start HANA
+  shell: HDB start
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: {{ sap_hana_control_sid | lower }}adm
+  register: starthana
+  changed_when: "'OK' in starthana.stdout"
+  when: sap_hana_control_function == "Start"
+
+- name: Stop HANA
+  shell: HDB stop
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: {{ sap_hana_control_sid | lower }}adm
+  register: stophana
+  changed_when: "'hdbdaemon is stopped' in stophana.stdout"
+  when: sap_hana_control_function == "Stop"
+
+- name: Change password of HANA user
+  shell: |
+      hdbsql -i {{ sap_hana_control_instance_nr }} -u {{ sap_hana_control_user }} 
+      -p {{ sap_hana_control_current_password }} -m ALTER USER  {{ sap_hana_control_user }}
+      PASSWORD {{ sap_hana_control_new_password }}
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: {{ sap_hana_control_sid | lower }}adm
+  register: changepasswordhana
+  changed_when: "'rows affected' in changepasswordhana.stdout"
+  when: sap_hana_control_function == "Change_Password"
